@@ -31,6 +31,9 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "test";
+    private static final String KEY_COUNT = "count";
+    private static final String KEY_USER_NAME = "user_name";
+    private static final String KEY_USER_SEX = "user_sex";
     
     private EditText editText;
     private TextView textResult;
@@ -138,11 +141,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState: ");
+        outState.putInt(KEY_COUNT, count);
+        outState.putString(KEY_USER_NAME, user.getName());
+        outState.putString(KEY_USER_SEX, user.getSex());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         Log.d(TAG, "onRestoreInstanceState: " + editText.getText().toString());
+        // 初回起動時などsavedInstanceStateはnullになりうる
+        // この処理はonCreateに持っていっても動く
+        // というより、現状のロジックであればonCreateで復元したほうが良い（理由は考えてみよう）
+        if (savedInstanceState == null) return;
+        count = savedInstanceState.getInt(KEY_COUNT);
+        user.setName(savedInstanceState.getString(KEY_USER_NAME));
+        user.setSex(savedInstanceState.getString(KEY_USER_SEX));
     }
 }
