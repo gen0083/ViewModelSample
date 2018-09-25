@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
         user = new User();
         textResult.setText(user.introduction());
+        countText.setText(String.valueOf(count));
 
         Log.d(TAG, "onCreate: " + editText.getText().toString());
     }
