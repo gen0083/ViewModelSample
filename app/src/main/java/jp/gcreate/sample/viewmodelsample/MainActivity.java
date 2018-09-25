@@ -16,6 +16,7 @@
 
 package jp.gcreate.sample.viewmodelsample;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -41,14 +42,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView countText;
     private Button countButton;
 
-    private User user;
-    private int count;
+    private MainViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate: ");
         setContentView(R.layout.activity_main);
+
+        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         editText = findViewById(R.id.editText);
         textResult = findViewById(R.id.textResult);
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setName(s.toString());
+                viewModel.setUserName(s.toString());
             }
         });
 
@@ -80,26 +82,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 String sex = checkedId == radioMale.getId() ? "Male" : "Female";
-                user.setSex(sex);
+                viewModel.setUserSex(sex);
             }
         });
         introductionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                textResult.setText(user.introduction());
+                textResult.setText(viewModel.getUser().introduction());
             }
         });
         countButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                count++;
-                countText.setText(String.valueOf(count));
+                viewModel.increment();
+                countText.setText(String.valueOf(viewModel.getCount()));
             }
         });
 
-        user = new User();
-        textResult.setText(user.introduction());
-        countText.setText(String.valueOf(count));
+        textResult.setText(viewModel.getUser().introduction());
+        countText.setText(String.valueOf(viewModel.getCount()));
 
         Log.d(TAG, "onCreate: " + editText.getText().toString());
     }
