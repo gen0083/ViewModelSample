@@ -18,29 +18,82 @@ package jp.gcreate.sample.viewmodelsample;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private EditText editText;
     private TextView textResult;
-    private Button submitButton;
+    private Button introductionButton;
     private RadioGroup radioGroup;
     private RadioButton radioMale;
     private RadioButton radioFemale;
+    private TextView countText;
+    private Button countButton;
+
+    private User user;
+    private int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        editText = findViewById(R.id.editText);
         textResult = findViewById(R.id.textResult);
-        submitButton = findViewById(R.id.submitButton);
+        introductionButton = findViewById(R.id.introductionButton);
         radioGroup = findViewById(R.id.radioGroup);
         radioMale = findViewById(R.id.radioMale);
         radioFemale = findViewById(R.id.radioFemale);
+        countText = findViewById(R.id.countText);
+        countButton = findViewById(R.id.countButton);
 
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // do-nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // do-nothing
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                user.setName(s.toString());
+            }
+        });
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                String sex = checkedId == radioMale.getId() ? "Male" : "Female";
+                user.setSex(sex);
+            }
+        });
+        introductionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textResult.setText(user.introduction());
+            }
+        });
+        countButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                count++;
+                countText.setText(String.valueOf(count));
+            }
+        });
+
+        user = new User();
+        textResult.setText(user.introduction());
     }
 }
